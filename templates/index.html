@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Cover App</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(120, 147, 199);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Button to toggle the sidebar -->
+    <button id="sidebar-toggle-btn" aria-label="Toggle Sidebar">☰</button>
+
+
+
+
+
+           <div class="dropdown">
+            <div class="user-profile-container">
+                <!-- Notification Icon -->
+                <div class="notification-container"> 
+                 <img src="../static/images/notification.png" alt="Notification" class="notification">
+                  <span class="badge" id="notification-badge"></span>
+               </div> 
+            
+                <!-- User Profile -->
+               <img src="../static/images/profile-picture.png" alt="Profile Picture" class="profile-pic">
+               <span class="user-name" id="user-name">{{ f_name }}</span>
+    
+    
+            <button class="dropdown-button" style="float: right;">
+                <img src="../static/images/dropdown-icon.png" alt="Dropdown Icon" class="dropdown-icon">
+            </button>
+            <div class="dropdown-menu">
+                {% if session.get('user_id') %}
+                <a href="#" id="edit-profile-button">Edit Profile</a>
+                {% endif %}
+                {% if session.is_admin %}
+                    <a class="view-users-btn" id="view-users-btn" onclick="location.href='/all-users'">View Users</a>
+                {% endif %}
+            </div>
+        </div>
+
+        </div>
+        
+
+                <!-- Modal Section -->
+        <div id="edit-profile-modal" class="modal">
+            <div class="modal-content">
+                <span id="close-modal-button" class="close-button">&times;</span>
+                <h2>Edit Profile</h2>
+                <form id="edit-profile-form" method="POST" action="/edit-profile">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" id="first_name" name="first_name">
+                    <br>
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" id="last_name" name="last_name">
+                    <br>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" value="{{ username }}">
+                    <br>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" value="{{ email }}">
+                    <br>
+                    <button type="submit">Save Changes</button>
+                </form>
+            </div>
+        </div>
+
+
+    <div class="sidebar">
+        <div class="sidebar-container">
+
+            <button class="logout-btn" id="logout-btn">Logout</button>
+        </div>
+    </div>
+    
+    <!-- Leaflet Map -->
+    <div id="map"></div>
+
+    <!-- Windy Map -->
+    <div id="windy-map">
+        <iframe id="windy-iframe" src="https://embed.windy.com/embed.html?type=map&zoom=3&overlay=clouds&product=ecmwf&level=surface&lat=-12.383&lon=117.422" frameborder="0"></iframe>
+    </div>
+
+    <!-- Data container for cloud cover data -->
+    <div class="data-container">
+        <div class="data-content">
+            <h3>Cloud Cover Data</h3>
+            <div>
+                <strong>Latitude:</strong> <span id="latitude">N/A</span><br>
+                <strong>Longitude:</strong> <span id="longitude">N/A</span>
+            </div>
+            <div id="cloudCoverDataTable" class="table-responsive mt-3">
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>High Cloud Cover</td>
+                            <td id="cloudCoverHigh">N/A</td>
+                        </tr>
+                        <tr>
+                            <td>Mid Cloud Cover</td>
+                            <td id="cloudCoverMid">N/A</td>
+                        </tr>
+                        <tr>
+                            <td>Low Cloud Cover</td>
+                            <td id="cloudCoverLow">N/A</td>
+                        </tr>
+                        <tr>
+                            <td>Total Cloud Cover</td>
+                            <td id="cloudCoverTotal">N/A</td>
+                        </tr>
+                        <tr>
+                            <td>Visibility</td>
+                            <td id="visibility">N/A</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div id="chartContainer">
+                <canvas id="hourlyCloudCoverChart"></canvas>
+            </div>
+
+
+            <div id="chatbot-container">
+                <h3>Chatbot</h3>
+                <div id="chatbot"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="../static/script.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
